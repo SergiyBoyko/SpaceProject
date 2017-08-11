@@ -36,6 +36,28 @@ public class Space {
     private int score;
     private boolean bossAval;
     private boolean pause;
+    private boolean intro;
+    private boolean start;
+    private int textX, textY;
+    private boolean secondText;
+    private boolean showPressEnter;
+    private boolean enterPressed;
+
+    public boolean isEnterPressed() {
+        return enterPressed;
+    }
+
+    public boolean isSecondText() {
+        return secondText;
+    }
+
+    public int getTextX() {
+        return textX;
+    }
+
+    public int getTextY() {
+        return textY;
+    }
 
     public boolean isBossAval() {
         return bossAval;
@@ -53,6 +75,18 @@ public class Space {
         return level;
     }
 
+    public boolean isIntro() {
+        return intro;
+    }
+
+    public boolean isStart() {
+        return start;
+    }
+
+    public boolean isShowPressEnter() {
+        return showPressEnter;
+    }
+
     public Space(int width, int height) {
         this.width = width;
         this.height = height;
@@ -60,17 +94,60 @@ public class Space {
         view = new View(controller);
     }
 
+    private void showGameStart() {
+        intro = true;
+        start = false;
+        secondText = false;
+        showPressEnter = false;
+        enterPressed = false;
+        while (intro) {
+            view.repaint();
+            Space.sleep(3000);
+            start = true;
+            view.repaint();
+            textX = 462/2;
+            textY = -200;
+            while (textY < 50) {
+                textY+=10;
+                view.repaint();
+                Space.sleep(50);
+            }
+            secondText = true;
+            textX = 347/2;
+            textY = -200;
+            while (textY < 150) {
+                textY+=10;
+                view.repaint();
+                Space.sleep(50);
+            }
+            showPressEnter = true;
+            view.repaint();
+            while (true) {
+                if (controller.hasKeyEvents() && controller.getEventFromTop().getKeyCode() == KeyEvent.VK_ENTER) {
+                    break;
+                }
+                Space.sleep(300);
+                showPressEnter = !showPressEnter;
+                view.repaint();
+            }
+            enterPressed = true;
+            view.repaint();
+            Space.sleep(3000);
+            intro = false;
+            start = false;
+        }
+    }
     /**
      * Основной цикл программы.
      * Тут происходят все важные действия
      */
     public void run() {
+        //Приветствие
+        showGameStart();
         //Создаем холст для отрисовки.
-//        canvas = new Canvas(width, height);
+
         pause = false;
         //Создаем объект "наблюдатель за клавиатурой" и стартуем его.
-//        KeyboardObserver keyboardObserver = new KeyboardObserver();
-//        keyboardObserver.start();
         bossAval = false;
         while (true) {
             //Игра работает, пока корабль жив

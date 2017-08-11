@@ -38,6 +38,8 @@ public class View extends JPanel {
     boolean isGameWon = false;
     boolean isGameLost = false;
 
+    private int textX, textY, adsX, adsY;
+
     public void setGameWon(boolean gameWon) {
         isGameWon = gameWon;
     }
@@ -72,6 +74,8 @@ public class View extends JPanel {
      */
 
     private void loadSources() throws IOException {
+
+
         backgroundImages.add(ImageIO.read(new File("sources/images/space_bg1.jpg")));
         backgroundImages.add(ImageIO.read(new File("sources/images/space_bg2.jpg")));
         backgroundImages.add(ImageIO.read(new File("sources/images/space_bg3.jpg")));
@@ -106,12 +110,21 @@ public class View extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        fillGameField(g);
-        fillGamePanel(g);
+        if (Space.game.isIntro()) {
+            if (Space.game.isEnterPressed()) {
+                showLoadScreen(g);
+            } else
+            if (Space.game.isStart()){
+                showStart(g);
+            } else showHello(g);
+        }
+        else {
+            fillGameField(g);
+            fillGamePanel(g);
+        }
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-        Font[] allFonts = ge.getAllFonts();
+//        Font[] allFonts = ge.getAllFonts();
 
 //        for (int i = 0; i < allFonts.length; i++) {
 //            Font f = allFonts[i].deriveFont(10.0f);
@@ -122,6 +135,66 @@ public class View extends JPanel {
 //        System.out.println(allFonts[26].getName());
 //
 //        }
+    }
+
+    private void showLoadScreen(Graphics g) {
+        try {
+            Image image = ImageIO.read(new File("sources/images/intro/load_bg.jpg"));
+            g.drawImage(image, 0, 0, this);
+            image = ImageIO.read(new File("sources/images/intro/text/loading.png"));
+            g.drawImage(image, getWidth() / 2 - 667/2, getHeight() / 2 - 132, 667, 132, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    private void showHello(Graphics g) {
+        try {
+            Image image = ImageIO.read(new File("sources/images/intro/intro_bg.jpg"));
+            g.drawImage(image, 0, 0, this);
+            image = ImageIO.read(new File("sources/images/intro/text/bbs.png"));
+            g.drawImage(image, getWidth() / 2 - 389/2, getHeight() / 4 - 100, 389, 100, this);
+            image = ImageIO.read(new File("sources/images/intro/text/corp.png"));
+            g.drawImage(image, getWidth() / 2 - 443/2, getHeight() / 4 + 50, 443, 100, this);
+            image = ImageIO.read(new File("sources/images/intro/text/pres.png"));
+            g.drawImage(image, getWidth() / 2 - 306/2, getHeight() / 4 + 200, 306, 100, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+    private void showStart(Graphics g) {
+        try {
+            Image image = ImageIO.read(new File("sources/images/intro/main_bg.png"));
+            g.drawImage(image, 0, 0, this);
+            if (!Space.game.isSecondText()) {
+                image = ImageIO.read(new File("sources/images/intro/text/space_war.png"));
+                textX = Space.game.getTextX();
+                textY = Space.game.getTextY();
+//                System.out.println(textX + " " + textY);
+                g.drawImage(image, getWidth() / 2 - textX, textY, 462, 100, this);
+            } else {
+                image = ImageIO.read(new File("sources/images/intro/text/space_war.png"));
+                g.drawImage(image, getWidth() / 2 - textX, textY, 462, 100, this);
+                image = ImageIO.read(new File("sources/images/intro/text/protection.png"));
+                adsX = Space.game.getTextX();
+                adsY = Space.game.getTextY();
+                g.drawImage(image, getWidth() / 2 - adsX, adsY, 347, 50, this);
+            }
+            if (Space.game.isShowPressEnter()) {
+                image = ImageIO.read(new File("sources/images/intro/text/start.png"));
+                g.drawImage(image, getWidth() / 2 - 150, 400, 300, 33, this);
+            }
+
+//            image = ImageIO.read(new File("sources/images/intro/text/corp.png"));
+//            g.drawImage(image, getWidth() / 2 - 443/2, getHeight() / 4 + 50, 443, 100, this);
+//            image = ImageIO.read(new File("sources/images/intro/text/pres.png"));
+//            g.drawImage(image, getWidth() / 2 - 306/2, getHeight() / 4 + 200, 306, 100, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
     }
 
     private void fillGameField(Graphics g) {
