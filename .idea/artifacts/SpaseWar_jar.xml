@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SpaseWar:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SpaseWar_jar</output-path>
+    <root id="archive" name="SpaseWar.jar">
+      <element id="module-output" name="SpaseWar" />
+    </root>
+  </artifact>
+</component>
